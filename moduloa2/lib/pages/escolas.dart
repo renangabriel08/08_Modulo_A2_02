@@ -14,6 +14,7 @@ class _ListaState extends State<Lista> {
   startApp() async {
     await App.getEscolas();
     await App.validarToken(context);
+    App.escolas.sort((a, b) => a['nome'].compareTo(b['nome']));
 
     loading = false;
     setState(() {});

@@ -110,6 +110,7 @@ class App {
       if (req.statusCode == 200) {
         final res = jsonDecode(utf8.decode(req.bodyBytes));
         comentarios = res['comentarios'];
+        MyToast.get('Comentários buscados com sucesso');
       } else {
         MyToast.get('Erro ao buscar comentários');
       }
