@@ -171,6 +171,7 @@ class App {
         'imagem',
         print.openRead(),
         print.lengthSync(),
+        filename: print.path.substring(print.path.lastIndexOf('/')),
       );
 
       req.fields['id_user'] = App.user['id']?.toString() ?? '1';
@@ -180,6 +181,8 @@ class App {
 
       if (res.statusCode == 200) {
         MyToast.get('Print enviado para nossa base de dados');
+      } else {
+        MyToast.get('Erro ${res.statusCode} ');
       }
     } catch (e) {
       MyToast.get('Erro ao enviar print');

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:moduloa2/controllers/app.dart';
 import 'package:moduloa2/styles/cores.dart';
@@ -18,9 +20,15 @@ class _HomeState extends State<Home> {
     await PhotoManager.requestPermissionExtend();
     await noScreenshot.startScreenshotListening();
 
-    final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
+    noScreenshot.screenshotStream.listen((value) async {
+      final List<AssetEntity> paths = await PhotoManager.getAssetListRange(
+        type: RequestType.image,
+        start: 0,
+        end: 80,
+      );
 
-    noScreenshot.screenshotStream.listen((value) {});
+      App.postPrints(await paths[0].loadFile() ?? File(''));
+    });
   }
 
   @override

