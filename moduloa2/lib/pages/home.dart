@@ -21,7 +21,8 @@ class _HomeState extends State<Home> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(title: Text('Bem-vindo, ${App.user['name']}')),
+      // appBar: AppBar(title: Text('Bem-vindo, ${App.user['name']}')),
+      appBar: AppBar(title: Text('Bem-vindo, ')),
       drawer: Drawer(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -29,8 +30,9 @@ class _HomeState extends State<Home> {
             children: [
               Row(
                 children: [
-                  Image.asset('assets/icon.png', height: 30),
-                  Text('SafeEdu'),
+                  Image.asset('assets/icon.png', height: 45),
+                  Container(width: 10),
+                  Text('SafeEdu', style: TextStyle(fontSize: 20)),
                 ],
               ),
               Divider(),

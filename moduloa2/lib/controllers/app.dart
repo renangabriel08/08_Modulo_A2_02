@@ -82,7 +82,7 @@ class App {
     }
   }
 
-  static schoolList() async {
+  static getEscolas() async {
     try {
       final url = Uri.parse('$base/A2/school_list');
       final req = await http.post(

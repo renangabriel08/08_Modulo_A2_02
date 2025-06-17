@@ -76,7 +76,10 @@ class _LoginState extends State<Login> {
           child: Form(
             key: formKey,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Image.asset('assets/logo.png', height: 150),
+                Container(height: 16),
                 TextFormField(
                   controller: email,
                   validator: (value) => validarEmail(),
