@@ -79,6 +79,7 @@ class _LoginState extends State<Login> {
               children: [
                 TextFormField(
                   controller: email,
+                  validator: (value) => validarEmail(),
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -90,6 +91,7 @@ class _LoginState extends State<Login> {
                 Container(height: 16),
                 TextFormField(
                   controller: senha,
+                  validator: (value) => validarSenha(),
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -99,16 +101,20 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 Container(height: 16),
-                Checkbox(
-                  value: manter,
-                  onChanged: (value) => setState(() {
-                    manter = !manter;
-                  }),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: manter,
+                      onChanged: (value) => setState(() {
+                        manter = !manter;
+                      }),
+                    ),
+                    Text('mantenha-me conectado'),
+                  ],
                 ),
                 Container(height: 16),
                 ElevatedButton(
                   onPressed: () => logar(),
-                  child: Text('Log in'),
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(width, 50),
                     shape: RoundedRectangleBorder(
@@ -116,6 +122,7 @@ class _LoginState extends State<Login> {
                     ),
                     backgroundColor: Cores.azulClaro,
                   ),
+                  child: Text('Log in', style: TextStyle(color: Cores.branco)),
                 ),
               ],
             ),

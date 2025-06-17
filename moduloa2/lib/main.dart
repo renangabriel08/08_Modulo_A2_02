@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:moduloa2/pages/home.dart';
 import 'package:moduloa2/pages/login.dart';
 import 'package:moduloa2/pages/splash.dart';
 import 'package:moduloa2/styles/cores.dart';
@@ -24,12 +25,12 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const Login(),
         '/splash': (context) => const Splash(),
-        '/home': (context) => const Login(),
+        '/home': (context) => const Home(),
         '/escolas': (context) => const Login(),
         '/detalhes': (context) => const Login(),
         '/mapa': (context) => const Login(),
       },
-      initialRoute: '/splash',
+      initialRoute: '/login',
     );
   }
 }

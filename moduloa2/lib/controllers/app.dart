@@ -31,13 +31,17 @@ class App {
 
         await getMotd();
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        MyToast.get('Login realizado com sucesso');
+      } else {
+        final res = jsonDecode(utf8.decode(req.bodyBytes));
+        MyToast.get(res['error']);
       }
     } catch (e) {
       MyToast.get('Erro ao realizar login');
     }
   }
 
-  static validarToken() async {
+  static validarToken(BuildContext context) async {
     try {
       final url = Uri.parse('$base/jwt/validate_token');
       final req = await http.post(
@@ -47,11 +51,14 @@ class App {
       );
 
       if (req.statusCode == 200) {
-        final res = jsonDecode(utf8.decode(req.bodyBytes));
         MyToast.get('Token válido');
+      } else {
+        MyToast.get('Token inválido');
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
       }
     } catch (e) {
       MyToast.get('Erro ao validar token');
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
     }
   }
 
