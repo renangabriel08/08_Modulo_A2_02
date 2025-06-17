@@ -41,6 +41,8 @@ dependencies:
   fluttertoast: ^8.2.12
   local_auth: ^2.3.0
   shared_preferences: ^2.5.3
+  no_screenshot: ^0.3.1
+  photo_manager: ^3.7.1
 
 dev_dependencies:
   flutter_test:

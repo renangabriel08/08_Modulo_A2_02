@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:moduloa2/widgets/toast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class App {
   static String base = 'https://workspace.dinizeotecnologia.com.br/worldskills';
@@ -13,6 +15,29 @@ class App {
   static List comentarios = [];
   static List escolas = [];
   static Map escola = {};
+  static bool manter = false;
+
+  static salvarDadosLogin() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user', jsonEncode(user));
+    await prefs.setBool('manter', manter);
+  }
+
+  static getDados() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    manter = prefs.getBool('manter') ?? false;
+  }
+
+  static getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    user = jsonDecode(prefs.getString('user') ?? '');
+  }
+
+  static apagarDados() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('manter');
+    prefs.remove('user');
+  }
 
   static logar(String email, String senha, BuildContext context) async {
     try {
@@ -29,7 +54,9 @@ class App {
         user = JwtDecoder.decode(token);
         user['senha'] = senha;
 
+        await salvarDadosLogin();
         await getMotd();
+
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         MyToast.get('Login realizado com sucesso');
       } else {
@@ -136,19 +163,26 @@ class App {
     }
   }
 
-  static postPrints() async {
+  static postPrints(File print) async {
     try {
       final url = Uri.parse('$base/A2/prints');
-      final req = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
+      final req = http.MultipartRequest('POST', url);
+      final img = http.MultipartFile(
+        'imagem',
+        print.openRead(),
+        print.lengthSync(),
       );
 
-      if (req.statusCode == 200) {
-        final res = jsonDecode(utf8.decode(req.bodyBytes));
+      req.fields['id_user'] = App.user['id']?.toString() ?? '1';
+      req.files.add(img);
+
+      final res = await req.send();
+
+      if (res.statusCode == 200) {
+        MyToast.get('Print enviado para nossa base de dados');
       }
     } catch (e) {
-      MyToast.get('Erro ao realizar login');
+      MyToast.get('Erro ao enviar print');
     }
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:moduloa2/controllers/app.dart';
 import 'package:moduloa2/styles/cores.dart';
 import 'package:moduloa2/widgets/toast.dart';
@@ -11,8 +13,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  bool manter = false;
-
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController email = TextEditingController();
@@ -55,12 +55,47 @@ class _LoginState extends State<Login> {
     return null;
   }
 
-  logar() {
+  logar() async {
     if (formKey.currentState!.validate()) {
-      App.logar(email.text, senha.text, context);
+      await App.logar(email.text, senha.text, context);
     } else {
       MyToast.get('Preencha todos os campos corretamente');
     }
+  }
+
+  startApp() async {
+    await App.getDados();
+
+    if (App.manter) {
+      final LocalAuthentication auth = LocalAuthentication();
+      final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+
+      if (canAuthenticateWithBiometrics) {
+        final List<BiometricType> availableBiometrics = await auth
+            .getAvailableBiometrics();
+
+        if (availableBiometrics.isNotEmpty) {
+          try {
+            final bool didAuthenticate = await auth.authenticate(
+              localizedReason: 'Please authenticate to show account balance',
+            );
+
+            if (didAuthenticate) {
+              await App.getUser();
+              await App.logar(App.user['email'], App.user['senha'], context);
+            }
+          } on PlatformException {
+            MyToast.get('Erro ao logar com biometria');
+          }
+        }
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    startApp();
+    super.initState();
   }
 
   @override
@@ -107,9 +142,9 @@ class _LoginState extends State<Login> {
                 Row(
                   children: [
                     Checkbox(
-                      value: manter,
+                      value: App.manter,
                       onChanged: (value) => setState(() {
-                        manter = !manter;
+                        App.manter = !App.manter;
                       }),
                     ),
                     Text('mantenha-me conectado'),

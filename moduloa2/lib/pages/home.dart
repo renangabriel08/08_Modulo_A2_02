@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moduloa2/controllers/app.dart';
 import 'package:moduloa2/styles/cores.dart';
+import 'package:no_screenshot/no_screenshot.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -10,9 +12,21 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final noScreenshot = NoScreenshot.instance;
+
+  printScreen() async {
+    await PhotoManager.requestPermissionExtend();
+    await noScreenshot.startScreenshotListening();
+
+    final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
+
+    noScreenshot.screenshotStream.listen((value) {});
+  }
+
   @override
   void initState() {
     App.validarToken(context);
+    printScreen();
     super.initState();
   }
 
@@ -56,11 +70,14 @@ class _HomeState extends State<Home> {
               ),
               ListTile(
                 title: Text('Logout'),
-                onTap: () => Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/login',
-                  (route) => false,
-                ),
+                onTap: () {
+                  App.apagarDados();
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/login',
+                    (route) => false,
+                  );
+                },
               ),
             ],
           ),
