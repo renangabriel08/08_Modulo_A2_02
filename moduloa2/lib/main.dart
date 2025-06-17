@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:moduloa2/pages/detalhes.dart';
 import 'package:moduloa2/pages/escolas.dart';
 import 'package:moduloa2/pages/home.dart';
 import 'package:moduloa2/pages/login.dart';
+import 'package:moduloa2/pages/mapa.dart';
 import 'package:moduloa2/pages/splash.dart';
 import 'package:moduloa2/styles/cores.dart';
 
@@ -28,8 +30,8 @@ class MyApp extends StatelessWidget {
         '/splash': (context) => const Splash(),
         '/home': (context) => const Home(),
         '/escolas': (context) => const Lista(),
-        '/detalhes': (context) => const Login(),
-        '/mapa': (context) => const Login(),
+        '/detalhes': (context) => const Detalhes(),
+        '/mapa': (context) => const Mapa(),
       },
       initialRoute: '/home',
     );

@@ -30,10 +30,10 @@ class _ListaState extends State<Lista> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(title: Text('Lista de escolas')),
+      appBar: AppBar(title: Text('Lista de Escolas')),
       body: loading
           ? Center(child: CircularProgressIndicator())
-          : Container(
+          : SizedBox(
               width: width,
               height: height,
               child: SingleChildScrollView(
@@ -42,6 +42,26 @@ class _ListaState extends State<Lista> {
                     for (var escola in App.escolas)
                       ListTile(
                         title: Text(escola['nome']),
+                        trailing: SizedBox(
+                          width: width * .15,
+                          child: Row(
+                            children: [
+                              for (
+                                int i = 0;
+                                i < escola['avaliacao'].round();
+                                i++
+                              )
+                                Icon(Icons.star, color: Colors.amber),
+                              if (escola['avaliacao'].round() < 5)
+                                for (
+                                  int e = escola['avaliacao'].round();
+                                  e < 5;
+                                  e++
+                                )
+                                  Icon(Icons.star_border, color: Colors.grey),
+                            ],
+                          ),
+                        ),
                         onTap: () {
                           App.escola = escola;
                           Navigator.pushNamed(context, '/detalhes');
